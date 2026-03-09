@@ -1,4 +1,4 @@
-const { getPendingSettlements, markSettled } = require('./db');
+const { getPendingSettlements, markSettled, getPaymentStatus } = require('./db');
 const { sendWebhook } = require('./webhook');
 
 function startScheduler() {
@@ -14,6 +14,8 @@ function startScheduler() {
     console.log(`[scheduler] Settling ${due.length} payment(s)...`);
 
     for (const payment of due) {
+      const statusCheck = getPaymentStatus(payment.id);
+      if (!statusCheck || statusCheck.status !== 'pending') continue;
       const settled_at = new Date().toISOString();
       const settled = markSettled(payment.id, settled_at);
       await sendWebhook(settled);
