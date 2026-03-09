@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { createPayment, getPayment } = require('./db');
+const { createPayment, getPayment, getPaymentStatus } = require('./db');
 const { startScheduler } = require('./scheduler');
 
 const app = express();
@@ -88,6 +88,12 @@ app.post('/payments', (req, res) => {
   });
 
   res.status(201).json(payment);
+});
+
+app.get('/payment-status/:id', (req, res) => {
+  const status = getPaymentStatus(req.params.id);
+  if (!status) return res.status(404).json({ error: 'Payment not found' });
+  res.json(status);
 });
 
 app.get('/payments/:id', (req, res) => {
