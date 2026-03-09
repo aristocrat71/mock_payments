@@ -1,0 +1,7 @@
+.claude
+node_modules/
+db.sqlite
+.env
+payments.db
+CLAUDE.md
+EXTENSION_PLAN.md
